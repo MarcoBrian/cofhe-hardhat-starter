@@ -20,6 +20,7 @@ contract SimpleCounter {
         owner = msg.sender; 
         counter = FHE.asEuint64(initial_value); 
         FHE.allowThis(counter); 
+        FHE.allow(counter, owner);  // allow owner
 
         //Encrypt the value 1 only once instead of every value change 
         delta = FHE.asEuint64(1); 
@@ -30,17 +31,21 @@ contract SimpleCounter {
     function increment_counter() external onlyOwner {
         counter = FHE.add(counter, delta) ;
         FHE.allowThis(counter); 
+        FHE.allowSender(counter); // allow owner
 
     }
 
     function decrement_counter() external onlyOwner{
         counter = FHE.sub(counter, delta); 
         FHE.allowThis(counter); 
+
     } 
 
     function reset_counter(InEuint64 calldata value) external onlyOwner {
         counter = FHE.asEuint64(value); 
         FHE.allowThis(counter); 
+        FHE.allowSender(counter);         // 👈 owner can unseal reset value
+
 
     }
 
